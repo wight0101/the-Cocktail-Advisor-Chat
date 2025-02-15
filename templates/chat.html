@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат-Консультант</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" placeholder="Введіть ваше запитання...">
+        <button onclick="sendMessage()">Надіслати</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById("user-input");
+            const chatBox = document.getElementById("chat-box");
+            const userMessage = inputField.value;
+            const userId = "user_123"; 
+
+            if (!userMessage) return;
+
+            chatBox.innerHTML += `<div class='user-message'>${userMessage}</div>`;
+            inputField.value = "";
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMessage, user_id: userId })
+            });
+
+            const data = await response.json();
+            chatBox.innerHTML += `<div class='bot-message'>${data.response}</div>`;
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+    </script>
+</body>
+</html>
